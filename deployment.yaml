@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-alura-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-alura
+  template:
+    metadata:
+      labels:
+        app: node-alura
+    spec:
+      containers:
+      - name: node-alura
+        image: 204014142778.dkr.ecr.us-east-1.amazonaws.com/asg
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+# service type loadbalancer       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: node-alura
+    k8s-app: node-alura
+  name: node-alura
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  type: LoadBalancer
+  selector:
+    app: node-alura
